@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using QliroShopper.Models;
+using QliroShopper.Services;
 
 namespace QliroShopper.Controllers
 {
@@ -16,13 +12,10 @@ namespace QliroShopper.Controllers
         [HttpGet]
         public IEnumerable<Order> Get()
         {
-            var optionsBuilder = new DbContextOptionsBuilder<OrderContext>();
-
             using (var context = new OrderContext()) 
             {
-                return context.Orders
-                                    .Include(b => b.OrderItems) 
-                                    .ToList();
+                var orderService = new OrderService(context);
+                return orderService.GetAllOrders();
             }
         }
 
@@ -32,7 +25,8 @@ namespace QliroShopper.Controllers
         {
             using (var context = new OrderContext()) 
             {
-                var order = context.Orders.Include(b => b.OrderItems).Where(b => b.Id == id).FirstOrDefault();
+                var orderService = new OrderService(context);
+                var order = orderService.FindOrder(id);
                 if (order == null) 
                 {
                     return new NotFoundResult();
@@ -50,8 +44,8 @@ namespace QliroShopper.Controllers
         {
             using (var context = new OrderContext()) 
             {
-                context.Orders.Add(new Order{});
-                context.SaveChanges();
+                var orderService = new OrderService(context);
+                orderService.AddOrder(json);
             }
             return Ok();
         }
