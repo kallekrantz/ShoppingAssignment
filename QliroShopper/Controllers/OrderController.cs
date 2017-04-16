@@ -16,25 +16,25 @@ namespace QliroShopper.Controllers
 
         // GET api/values
         [HttpGet]
-        public IEnumerable<Order> Get()
+        public ObjectResult GetAllOrders()
         {
             var orderService = new DatabaseService(context);
-            return orderService.GetAllOrders();
+            return Ok(orderService.GetAllOrders());
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public ObjectResult Get(int id)
         {
             var orderService = new DatabaseService(context);
             var order = orderService.FindOrder(id);
-            if (order == null) return new NotFoundResult();
+            if (order == null) return NotFound("Could not find order");
             return Ok(order);                
         }
 
         // POST api/values
         [HttpPost]
-        public IActionResult Post([FromBody]Order order)
+        public StatusCodeResult Post([FromBody]Order order)
         {
             var orderService = new DatabaseService(context);
             orderService.AddOrder(order);

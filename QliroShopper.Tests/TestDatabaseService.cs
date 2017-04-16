@@ -9,9 +9,9 @@ using System.Collections.Generic;
 
 namespace QliroShopper.Tests
 {
-    public class TestOrderGetting
+    public class TestDatabaseService
     {
-        private string connection_string = "Data Source=:memory:";
+        internal static string connection_string = "Data Source=:memory:";
         private readonly Order one_item_order = new Order{
                         OrderItems = new List<Item>{
                             new Item{
@@ -73,7 +73,7 @@ namespace QliroShopper.Tests
             using (var connection = new TestSqliteSetup(connection_string))
             {
                 using (var context = new OrderContext(connection.Options))
-                {   
+                {
                     new DatabaseService(context).AddOrder(four_item_order);
                 }
                 using (var context = new OrderContext(connection.Options))
@@ -155,7 +155,7 @@ namespace QliroShopper.Tests
             using (var connection = new TestSqliteSetup(connection_string))
             {
                 using (var context = new OrderContext(connection.Options))
-                {   
+                {
                     new DatabaseService(context).AddOrder(four_item_order);
                 }
                 // Test Happy Path
