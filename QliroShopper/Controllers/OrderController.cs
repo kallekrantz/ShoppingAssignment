@@ -18,7 +18,7 @@ namespace QliroShopper.Controllers
         [HttpGet]
         public IEnumerable<Order> Get()
         {
-            var orderService = new OrderService(context);
+            var orderService = new DatabaseService(context);
             return orderService.GetAllOrders();
         }
 
@@ -26,7 +26,7 @@ namespace QliroShopper.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var orderService = new OrderService(context);
+            var orderService = new DatabaseService(context);
             var order = orderService.FindOrder(id);
             if (order == null) 
             {
@@ -40,10 +40,10 @@ namespace QliroShopper.Controllers
 
         // POST api/values
         [HttpPost]
-        public IActionResult Post([FromBody]string json)
+        public IActionResult Post([FromBody]Order order)
         {
-            var orderService = new OrderService(context);
-            orderService.AddOrder(json);
+            var orderService = new DatabaseService(context);
+            orderService.AddOrder(order);
             return Ok();
         }
 
@@ -76,7 +76,7 @@ namespace QliroShopper.Controllers
         [HttpPost("{id}/item")]
         public IActionResult AddItem(int id, [FromBody]Item item)
         {
-            var orderService = new OrderService(context);
+            var orderService = new DatabaseService(context);
             var order = orderService.FindOrder(id);
             if (order == null) return NotFound();
             orderService.AddItem(order, item);

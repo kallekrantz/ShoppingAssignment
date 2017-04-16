@@ -13,7 +13,7 @@ namespace QliroShopper.Models {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        public virtual ICollection<Item> OrderItems { get; set; }
+        public virtual IList<Item> OrderItems { get; set; }
 
         [NotMappedAttribute]
         public decimal TotalPrice 

@@ -6,11 +6,11 @@ using QliroShopper.Models;
 
 namespace QliroShopper.Services
 {
-    public class OrderService
+    public class DatabaseService
     {
         private OrderContext _context;
 
-        public OrderService(OrderContext context)
+        public DatabaseService(OrderContext context)
         {
             _context = context;
         }
@@ -28,9 +28,9 @@ namespace QliroShopper.Services
                            .FirstOrDefault();
         }
 
-        public void AddOrder(string v)
+        public void AddOrder(Order o)
         {
-            _context.Orders.Add(new Order{});
+            _context.Orders.Add(o);
             _context.SaveChanges();
         }
 
