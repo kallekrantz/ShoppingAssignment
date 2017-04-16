@@ -31,14 +31,18 @@ namespace QliroShopper.Tests
             }
         }
 
-        [Fact]
-        public void TestGettingNotExistingOrder()
+
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(0)]
+        [InlineData(1)]
+        public void TestGettingNotExistingOrder(int dataId)
         {
             using (var connection = new TestSqliteSetup(connection_string))
             {
                 using (var context = new OrderContext(connection.Options))
                 {
-                    Assert.Null(new OrderService(context).FindOrder(1));
+                    Assert.Null(new OrderService(context).FindOrder(dataId));
                 }
             }
 
