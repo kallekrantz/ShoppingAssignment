@@ -182,5 +182,33 @@ namespace QliroShopper.Tests
                 }
             }
         }
+        [Fact]
+        public void TestModifyItem()
+        {
+            using (var connection = new TestSqliteSetup(connection_string))
+            {
+                using (var context = new OrderContext(connection.Options))
+                {   
+                    new DatabaseService(context).AddOrder(four_item_order);
+                }
+                using (var context = new OrderContext(connection.Options))
+                {
+                    var orderService = new DatabaseService(context);
+                    var order = orderService.FindOrder(1);
+                    var item = order.OrderItems[0];
+                    item.Quantity = 10;
+                    // Get a copy of the item.
+                    var stored_item = orderService.FindItem(order, item.Id);
+                    orderService.UpdateItem(item, stored_item);
+                }
+                using (var context = new OrderContext(connection.Options))
+                {
+                    var orderService = new DatabaseService(context);
+                    var order = orderService.FindOrder(1);
+                    var item = order.OrderItems[0];
+                    Assert.Equal(10, item.Quantity);
+                }
+            }
+        }
     }
 }

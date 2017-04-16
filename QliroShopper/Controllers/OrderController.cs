@@ -28,14 +28,8 @@ namespace QliroShopper.Controllers
         {
             var orderService = new DatabaseService(context);
             var order = orderService.FindOrder(id);
-            if (order == null) 
-            {
-                return new NotFoundResult();
-            }
-            else
-            {
-                return Ok(order);                
-            }
+            if (order == null) return new NotFoundResult();
+            return Ok(order);                
         }
 
         // POST api/values
@@ -53,9 +47,7 @@ namespace QliroShopper.Controllers
         {
             var service = new DatabaseService(context);
             var stored_order = service.FindOrder(id);
-            if (stored_order == null) {
-                return NotFound();
-            }
+            if (stored_order == null) return NotFound();
             service.UpdateOrder(stored_order, order);
             return Ok();
         }
@@ -103,8 +95,14 @@ namespace QliroShopper.Controllers
         }
 
         [HttpPut("{id}/item/{itemId}")]
-        public IActionResult EditItem(int id, int itemId, [FromBody]string val)
+        public IActionResult EditItem(int id, int itemId, [FromBody]Item updated_item)
         {
+            var orderService = new DatabaseService(context);
+            var order = orderService.FindOrder(id);
+            if (order == null) return NotFound();
+            var item = orderService.FindItem(order, itemId);
+            if (item == null) return NotFound();
+            orderService.UpdateItem(item, updated_item);
             return Ok();
         }
 

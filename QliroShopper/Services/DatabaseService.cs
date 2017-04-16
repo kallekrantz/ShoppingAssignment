@@ -40,22 +40,31 @@ namespace QliroShopper.Services
             _context.Entry(old_order).CurrentValues.SetValues(updated_order);
             _context.SaveChanges();
         }
-        public void AddItem(Order order, Item item){
+        public void AddItem(Order order, Item item)
+        {
             order.OrderItems.Add(item);
             _context.Add(item);
             _context.Update(order);
             _context.SaveChanges();
         }
 
-        public IList<Item> GetAllItemsForOrder(Order order){
+        public IList<Item> GetAllItemsForOrder(Order order)
+        {
             return _context.Items
                            .Where(b => b.Order.Id == order.Id).ToList();
         }
 
-        public Item FindItem(Order order, int itemId){
+        public Item FindItem(Order order, int itemId)
+        {
             return _context.Items
                            .Where(b => b.Order.Id == order.Id && b.Id == itemId)
                            .FirstOrDefault();
+        }
+
+        public void UpdateItem(Item item, Item updated_item)
+        {
+            _context.Entry(item).CurrentValues.SetValues(updated_item);
+            _context.SaveChanges();        
         }
     }
 }
