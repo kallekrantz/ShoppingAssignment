@@ -8,33 +8,33 @@ namespace QliroShopper.Controllers
     [Route("api/order")]
     public class OrderController : Controller
     {
+        private readonly OrderContext context;
+
+        public OrderController(OrderContext context){
+            this.context = context;
+        }
+
         // GET api/values
         [HttpGet]
         public IEnumerable<Order> Get()
         {
-            using (var context = new OrderContext()) 
-            {
-                var orderService = new OrderService(context);
-                return orderService.GetAllOrders();
-            }
+            var orderService = new OrderService(context);
+            return orderService.GetAllOrders();
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            using (var context = new OrderContext()) 
+            var orderService = new OrderService(context);
+            var order = orderService.FindOrder(id);
+            if (order == null) 
             {
-                var orderService = new OrderService(context);
-                var order = orderService.FindOrder(id);
-                if (order == null) 
-                {
-                    return new NotFoundResult();
-                }
-                else
-                {
-                    return Ok(order);                
-                }
+                return new NotFoundResult();
+            }
+            else
+            {
+                return Ok(order);                
             }
         }
 
@@ -42,11 +42,8 @@ namespace QliroShopper.Controllers
         [HttpPost]
         public IActionResult Post([FromBody]string json)
         {
-            using (var context = new OrderContext()) 
-            {
-                var orderService = new OrderService(context);
-                orderService.AddOrder(json);
-            }
+            var orderService = new OrderService(context);
+            orderService.AddOrder(json);
             return Ok();
         }
 
@@ -60,17 +57,14 @@ namespace QliroShopper.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            using (var context = new OrderContext()) 
+            var order = context.Orders.Find(id);
+            if (order == null) 
             {
-                var order = context.Orders.Find(id);
-                if (order == null) 
-                {
-                    return new NotFoundResult();
-                }
-                context.Remove(order);
-                context.SaveChanges();
-                return Ok();
+                return new NotFoundResult();
             }
+            context.Remove(order);
+            context.SaveChanges();
+            return Ok();
         }
 
         [HttpGet("{id}/item")]
@@ -82,14 +76,10 @@ namespace QliroShopper.Controllers
         [HttpPost("{id}/item")]
         public IActionResult AddItem(int id, [FromBody]Item item)
         {
-            using (var context = new OrderContext()) 
-            {
-                var order = context.Orders.Find(id);
-                order.OrderItems.Add(item);
-                context.Add(item);
-                context.Update(order);
-                context.SaveChanges();
-            }
+            var orderService = new OrderService(context);
+            var order = orderService.FindOrder(id);
+            if (order == null) return NotFound();
+            orderService.AddItem(order, item);
             return Ok();
         }
         

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using Microsoft.EntityFrameworkCore;
 using QliroShopper.Models;
 
@@ -30,6 +31,13 @@ namespace QliroShopper.Services
         public void AddOrder(string v)
         {
             _context.Orders.Add(new Order{});
+            _context.SaveChanges();
+        }
+
+        public void AddItem(Order order, Item item){
+            order.OrderItems.Add(item);
+            _context.Add(item);
+            _context.Update(order);
             _context.SaveChanges();
         }
     }
