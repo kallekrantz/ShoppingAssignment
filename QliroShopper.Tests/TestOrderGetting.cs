@@ -12,14 +12,7 @@ namespace QliroShopper.Tests
     public class TestOrderGetting
     {
         private string connection_string = "Data Source=:memory:";
-        [Fact]
-        public void TestGettingOneOrder()
-        {
-            using (var connection = new TestSqliteSetup(connection_string))
-            {
-                using (var context = new OrderContext(connection.Options))
-                {   
-                    var order =  new Order{
+        private readonly Order one_item_order = new Order{
                         OrderItems = new List<Item>{
                             new Item{
                                 Quantity = 0,
@@ -28,29 +21,7 @@ namespace QliroShopper.Tests
                             }
                         }
                     };
-                    new DatabaseService(context).AddOrder(order);
-                }
-                using (var context = new OrderContext(connection.Options))
-                {
-                    var orderService = new DatabaseService(context);
-                    var order = orderService.FindOrder(1);
-                    Assert.NotNull(order);
-                    Assert.Equal(0, order.TotalPrice);
-                    Assert.Equal(order.OrderItems.Count, 1);
-                    Assert.Equal(order.OrderItems[0].Order, order);
-                }
-
-            }
-        }
-
-        [Fact]
-        public void TestCalculatingTotalPrice()
-        {
-            using (var connection = new TestSqliteSetup(connection_string))
-            {
-                using (var context = new OrderContext(connection.Options))
-                {   
-                    var order =  new Order{
+        private readonly Order four_item_order = new Order{
                         OrderItems = new List<Item>{
                             new Item{
                                 Quantity = 1,
@@ -74,7 +45,36 @@ namespace QliroShopper.Tests
                             }
                         }
                     };
-                    new DatabaseService(context).AddOrder(order);
+        [Fact]
+        public void TestGettingOneOrder()
+        {
+            using (var connection = new TestSqliteSetup(connection_string))
+            {
+                using (var context = new OrderContext(connection.Options))
+                {   
+                    new DatabaseService(context).AddOrder(one_item_order);
+                }
+                using (var context = new OrderContext(connection.Options))
+                {
+                    var orderService = new DatabaseService(context);
+                    var order = orderService.FindOrder(1);
+                    Assert.NotNull(order);
+                    Assert.Equal(0, order.TotalPrice);
+                    Assert.Equal(order.OrderItems.Count, 1);
+                    Assert.Equal(order.OrderItems[0].Order, order);
+                }
+
+            }
+        }
+
+        [Fact]
+        public void TestCalculatingTotalPrice()
+        {
+            using (var connection = new TestSqliteSetup(connection_string))
+            {
+                using (var context = new OrderContext(connection.Options))
+                {   
+                    new DatabaseService(context).AddOrder(four_item_order);
                 }
                 using (var context = new OrderContext(connection.Options))
                 {
@@ -101,6 +101,86 @@ namespace QliroShopper.Tests
                 }
             }
 
+        }
+
+        [Fact]
+        public void TestModifyingOrder()
+        {
+            using (var connection = new TestSqliteSetup(connection_string))
+            {
+                using (var context = new OrderContext(connection.Options))
+                {   
+                    new DatabaseService(context).AddOrder(one_item_order);
+                }
+                using (var context = new OrderContext(connection.Options))
+                {
+                    var orderService = new DatabaseService(context);
+                    var old_order = orderService.FindOrder(1);                    
+                    var order = orderService.FindOrder(1);
+                    Assert.Equal(0, order.TotalPrice);
+                    order.OrderItems[0].Quantity = 1;
+                    orderService.UpdateOrder(old_order, order);
+                }
+                using (var context = new OrderContext(connection.Options))
+                {
+                    var orderService = new DatabaseService(context);
+                    var order = orderService.FindOrder(1);                    
+                    Assert.Equal(order.TotalPrice, 2);
+                }
+
+            }
+        }
+
+        [Fact]
+        public void TestGetItems()
+        {
+            using (var connection = new TestSqliteSetup(connection_string))
+            {
+                using (var context = new OrderContext(connection.Options))
+                {   
+                    new DatabaseService(context).AddOrder(four_item_order);
+                }
+                using (var context = new OrderContext(connection.Options))
+                {
+                    var orderService = new DatabaseService(context);
+                    var order = orderService.FindOrder(1);
+                    Assert.Equal(4, orderService.GetAllItemsForOrder(order).Count);
+                }
+            }
+        }
+
+        [Fact]
+        public void TestGetSingleItem()
+        {
+            using (var connection = new TestSqliteSetup(connection_string))
+            {
+                using (var context = new OrderContext(connection.Options))
+                {   
+                    new DatabaseService(context).AddOrder(four_item_order);
+                }
+                // Test Happy Path
+                using (var context = new OrderContext(connection.Options))
+                {
+                    var orderService = new DatabaseService(context);
+                    var order = orderService.FindOrder(1);
+                    var item = order.OrderItems[0];
+                    Assert.NotNull(orderService.FindItem(order, item.Id));
+                }
+                // Verify that invalid IDs for both order and item would return null.
+                using (var context = new OrderContext(connection.Options))
+                {
+                    var orderService = new DatabaseService(context);
+                    var order = orderService.FindOrder(1);
+                    var item = order.OrderItems[0];
+                    var oldId = order.Id;
+                    order.Id = -1;
+                    // Invalid order, Valid item 
+                    Assert.Null(orderService.FindItem(order, item.Id));
+                    order.Id = oldId;
+                    // Valid order, Invalid item
+                    Assert.Null(orderService.FindItem(order, 123));
+                }
+            }
         }
     }
 }

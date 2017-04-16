@@ -49,19 +49,24 @@ namespace QliroShopper.Controllers
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public IActionResult Put(int id, [FromBody]Order order)
         {
+            var service = new DatabaseService(context);
+            var stored_order = service.FindOrder(id);
+            if (stored_order == null) {
+                return NotFound();
+            }
+            service.UpdateOrder(stored_order, order);
+            return Ok();
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var order = context.Orders.Find(id);
-            if (order == null) 
-            {
-                return new NotFoundResult();
-            }
+            var orderService = new DatabaseService(context);
+            var order = orderService.FindOrder(id);
+            if (order == null) return new NotFoundResult();
             context.Remove(order);
             context.SaveChanges();
             return Ok();
@@ -70,7 +75,10 @@ namespace QliroShopper.Controllers
         [HttpGet("{id}/item")]
         public IActionResult GetItems(int id)
         {
-            return Ok();
+            var orderService = new DatabaseService(context);
+            var order = orderService.FindOrder(id);
+            if (order == null) return NotFound();
+            return Ok(orderService.GetAllItemsForOrder(order));
         }
         
         [HttpPost("{id}/item")]
@@ -86,7 +94,12 @@ namespace QliroShopper.Controllers
         [HttpGet("{id}/item/{itemId}")]
         public IActionResult GetItem(int id, int itemId)
         {
-            return Ok();
+            var orderService = new DatabaseService(context);
+            var order = orderService.FindOrder(id);
+            if (order == null) return NotFound();
+            var item = orderService.FindItem(order, itemId);
+            if (item == null) return NotFound();
+            return Ok(item);
         }
 
         [HttpPut("{id}/item/{itemId}")]
@@ -98,6 +111,13 @@ namespace QliroShopper.Controllers
         [HttpDelete("{id}/item/{itemId}")]
         public IActionResult RemoveItem(int id, int itemId)
         {
+            var orderService = new DatabaseService(context);
+            var order = orderService.FindOrder(id);
+            if (order == null) return NotFound();
+            var item = orderService.FindItem(order, itemId);
+            if (item == null) return NotFound();
+            context.Remove(item);
+            context.SaveChanges();
             return Ok();
         }
     }
