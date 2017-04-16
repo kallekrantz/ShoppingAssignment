@@ -25,7 +25,7 @@ namespace QliroShopper.Tests
             }
         }
         [Fact]
-        public void TestGetOrder()
+        public void TestGetNotExistingOrder()
         {
             using (var connection = new TestSqliteSetup(TestDatabaseService.connection_string))
             {
