@@ -136,12 +136,217 @@ namespace QliroShopper.Tests
                 {   
                     var controller = new OrderController(context);
                     var order = new Order();
+                    order.OrderItems = new List<Item>();
                     order.OrderItems.Add(new Item{
                         Quantity = 1,
                         Price = 2,
                         Description = "Apple"
                     });
                     var response = controller.EditOrder(1, order);
+                    Assert.Equal((int)HttpStatusCode.NotFound, response.StatusCode);
+                }
+            }
+        }
+        [Fact]
+        public void TestAddItem()
+        {
+            using (var connection = new TestSqliteSetup(TestDatabaseService.connection_string))
+            {
+                using (var context = new OrderContext(connection.Options))
+                {   
+                    var controller = new OrderController(context);
+                    var response = controller.AddOrder(new Order());
+                    Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
+                }
+                using (var context = new OrderContext(connection.Options))
+                {   
+                    var controller = new OrderController(context);
+                    var response = controller.AddItem(1, new Item{
+                        Quantity = 1,
+                        Price = 4,
+                        Description = "Pineapple"
+                    });
+                    Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
+                }
+                using (var context = new OrderContext(connection.Options))
+                {   
+                    var controller = new OrderController(context);
+                    var response = controller.GetItems(1);
+                    var items = (List<Item>) response.Value;
+                    Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
+                    Assert.Equal(1, items.Count);
+                    var item = items[0];
+                    Assert.Equal(1, item.Quantity);
+                    Assert.Equal(4, item.Price);
+                    Assert.Equal("Pineapple", item.Description);
+                }
+            }
+        }
+        [Fact]
+        public void TestAddItemToNotExistingOrder()
+        {
+            using (var connection = new TestSqliteSetup(TestDatabaseService.connection_string))
+            {
+                using (var context = new OrderContext(connection.Options))
+                {   
+                    var controller = new OrderController(context);
+                    var response = controller.AddItem(1, new Item{
+                        Quantity = 1,
+                        Price = 4,
+                        Description = "Pineapple"
+                    });
+                    Assert.Equal((int)HttpStatusCode.NotFound, response.StatusCode);
+                }
+            }
+        }
+        [Fact]
+        public void TestEditItem()
+        {
+           using (var connection = new TestSqliteSetup(TestDatabaseService.connection_string))
+            {
+                using (var context = new OrderContext(connection.Options))
+                {   
+                    var controller = new OrderController(context);
+                    var response = controller.AddOrder(new Order{
+                        OrderItems = new List<Item>{
+                            new Item{
+                                Quantity = 1,
+                                Price = 4,
+                                Description = "Pineapple"
+                            }
+                        }
+                    });
+                    Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
+                }
+                using (var context = new OrderContext(connection.Options))
+                {   
+                    var controller = new OrderController(context);
+                    var response = controller.EditItem(1, 1, new Item{
+                                Quantity = 3,
+                                Price = 2,
+                                Description = "Apple"
+                            });
+                    Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
+                }
+                using (var context = new OrderContext(connection.Options))
+                {   
+                    var controller = new OrderController(context);
+                    var response = controller.GetItems(1);
+                    var items = (List<Item>) response.Value;
+                    Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
+                    Assert.Equal(1, items.Count);
+                    var item = items[0];
+                    Assert.Equal(3, item.Quantity);
+                    Assert.Equal(2, item.Price);
+                    Assert.Equal("Apple", item.Description);
+                }
+            }
+        }
+        [Fact]
+        public void TestEditItemNotExistingOrder()
+        {
+           using (var connection = new TestSqliteSetup(TestDatabaseService.connection_string))
+            {
+                using (var context = new OrderContext(connection.Options))
+                {   
+                    var controller = new OrderController(context);
+                    var response = controller.EditItem(1, 1, new Item{
+                                Quantity = 3,
+                                Price = 2,
+                                Description = "Apple"
+                            });
+                    Assert.Equal((int)HttpStatusCode.NotFound, response.StatusCode);
+                }
+            }
+        }
+        [Fact]
+        public void TestEditItemNotExistingItem()
+        {
+           using (var connection = new TestSqliteSetup(TestDatabaseService.connection_string))
+            {
+                using (var context = new OrderContext(connection.Options))
+                {   
+                    var controller = new OrderController(context);
+                    var response = controller.AddOrder(new Order{});
+                    Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
+                }
+                using (var context = new OrderContext(connection.Options))
+                {   
+                    var controller = new OrderController(context);
+                    var response = controller.EditItem(1, 1, new Item{
+                                Quantity = 3,
+                                Price = 2,
+                                Description = "Apple"
+                            });
+                    Assert.Equal((int)HttpStatusCode.NotFound, response.StatusCode);
+                }
+            }
+        }
+        [Fact]
+        public void TestRemoveItem()
+        {
+           using (var connection = new TestSqliteSetup(TestDatabaseService.connection_string))
+            {
+                using (var context = new OrderContext(connection.Options))
+                {   
+                    var controller = new OrderController(context);
+                    var response = controller.AddOrder(new Order{
+                        OrderItems = new List<Item>{
+                            new Item{
+                                Quantity = 1,
+                                Price = 4,
+                                Description = "Pineapple"
+                            }
+                        }
+                    });
+                    Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
+                }
+                using (var context = new OrderContext(connection.Options))
+                {   
+                    var controller = new OrderController(context);
+                    var response = controller.RemoveItem(1, 1);
+                    Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
+                }
+                using (var context = new OrderContext(connection.Options))
+                {   
+                    var controller = new OrderController(context);
+                    var response = controller.GetItems(1);
+                    var items = (List<Item>) response.Value;
+                    Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
+                    Assert.Empty(items);
+                }
+            }
+        }
+        [Fact]
+        public void TestRemoveItemNotExistingOrder()
+        {
+           using (var connection = new TestSqliteSetup(TestDatabaseService.connection_string))
+            {
+                using (var context = new OrderContext(connection.Options))
+                {   
+                    var controller = new OrderController(context);
+                    var response = controller.RemoveItem(1, 1);
+                    Assert.Equal((int)HttpStatusCode.NotFound, response.StatusCode);
+                }
+            }
+        }
+        [Fact]
+        public void TestRemoveItemNotExistingItem()
+        {
+           using (var connection = new TestSqliteSetup(TestDatabaseService.connection_string))
+            {
+                using (var context = new OrderContext(connection.Options))
+                {   
+                    var controller = new OrderController(context);
+                    var response = controller.AddOrder(new Order{
+                        OrderItems = new List<Item>{}
+                    });
+                    Assert.Equal((int)HttpStatusCode.OK, response.StatusCode);
+                }
+                using (var context = new OrderContext(connection.Options))
+                {   
+                    var controller = new OrderController(context);
+                    var response = controller.RemoveItem(1, 1);
                     Assert.Equal((int)HttpStatusCode.NotFound, response.StatusCode);
                 }
             }

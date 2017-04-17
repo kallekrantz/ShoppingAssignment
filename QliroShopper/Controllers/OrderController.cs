@@ -65,16 +65,16 @@ namespace QliroShopper.Controllers
         }
 
         [HttpGet("{id}/item")]
-        public IActionResult GetItems(int id)
+        public ObjectResult GetItems(int id)
         {
             var orderService = new DatabaseService(context);
             var order = orderService.FindOrder(id);
-            if (order == null) return NotFound();
+            if (order == null) return NotFound("Order not found");
             return Ok(orderService.GetAllItemsForOrder(order));
         }
         
         [HttpPost("{id}/item")]
-        public IActionResult AddItem(int id, [FromBody]Item item)
+        public StatusCodeResult AddItem(int id, [FromBody]Item item)
         {
             var orderService = new DatabaseService(context);
             var order = orderService.FindOrder(id);
@@ -95,7 +95,7 @@ namespace QliroShopper.Controllers
         }
 
         [HttpPut("{id}/item/{itemId}")]
-        public IActionResult EditItem(int id, int itemId, [FromBody]Item updated_item)
+        public StatusCodeResult EditItem(int id, int itemId, [FromBody]Item updated_item)
         {
             var orderService = new DatabaseService(context);
             var order = orderService.FindOrder(id);
@@ -107,7 +107,7 @@ namespace QliroShopper.Controllers
         }
 
         [HttpDelete("{id}/item/{itemId}")]
-        public IActionResult RemoveItem(int id, int itemId)
+        public StatusCodeResult RemoveItem(int id, int itemId)
         {
             var orderService = new DatabaseService(context);
             var order = orderService.FindOrder(id);

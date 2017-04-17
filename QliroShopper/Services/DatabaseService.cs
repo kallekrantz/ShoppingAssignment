@@ -37,6 +37,8 @@ namespace QliroShopper.Services
         }
        public void UpdateOrder(Order old_order, Order updated_order)
         {
+            // Cannot change the ID, inherit it from the original item.
+            old_order.Id = updated_order.Id;
             _context.Entry(old_order).CurrentValues.SetValues(updated_order);
             _context.SaveChanges();
         }
@@ -63,6 +65,8 @@ namespace QliroShopper.Services
 
         public void UpdateItem(Item item, Item updated_item)
         {
+            // Cannot change the ID, inherit it from the original item.
+            updated_item.Id = item.Id;
             _context.Entry(item).CurrentValues.SetValues(updated_item);
             _context.SaveChanges();        
         }
