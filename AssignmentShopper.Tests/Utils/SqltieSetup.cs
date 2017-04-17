@@ -1,9 +1,9 @@
 using Microsoft.Data.Sqlite;
 
-namespace QliroShopper.Tests.Utils {
+namespace AssignmentShopper.Tests.Utils {
     public class ManagedSqliteConnection : SqliteConnection, System.IDisposable
     {
-         
+
         public ManagedSqliteConnection(string connection_string) : base(connection_string) {
             Open();
         }

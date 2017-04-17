@@ -1,13 +1,13 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
-using QliroShopper.Services;
+using AssignmentShopper.Services;
 using System.Data;
-using QliroShopper.Tests.Utils;
-using QliroShopper.Models;
+using AssignmentShopper.Tests.Utils;
+using AssignmentShopper.Models;
 using System.Collections.Generic;
 
-namespace QliroShopper.Tests
+namespace AssignmentShopper.Tests
 {
     public class TestDatabaseService
     {
@@ -51,7 +51,7 @@ namespace QliroShopper.Tests
             using (var connection = new TestSqliteSetup(connection_string))
             {
                 using (var context = new OrderContext(connection.Options))
-                {   
+                {
                     new DatabaseService(context).AddOrder(one_item_order);
                 }
                 using (var context = new OrderContext(connection.Options))
@@ -109,13 +109,13 @@ namespace QliroShopper.Tests
             using (var connection = new TestSqliteSetup(connection_string))
             {
                 using (var context = new OrderContext(connection.Options))
-                {   
+                {
                     new DatabaseService(context).AddOrder(one_item_order);
                 }
                 using (var context = new OrderContext(connection.Options))
                 {
                     var orderService = new DatabaseService(context);
-                    var old_order = orderService.FindOrder(1);                    
+                    var old_order = orderService.FindOrder(1);
                     var order = orderService.FindOrder(1);
                     Assert.Equal(0, order.TotalPrice);
                     order.OrderItems[0].Quantity = 1;
@@ -124,7 +124,7 @@ namespace QliroShopper.Tests
                 using (var context = new OrderContext(connection.Options))
                 {
                     var orderService = new DatabaseService(context);
-                    var order = orderService.FindOrder(1);                    
+                    var order = orderService.FindOrder(1);
                     Assert.Equal(order.TotalPrice, 2);
                 }
 
@@ -137,7 +137,7 @@ namespace QliroShopper.Tests
             using (var connection = new TestSqliteSetup(connection_string))
             {
                 using (var context = new OrderContext(connection.Options))
-                {   
+                {
                     new DatabaseService(context).AddOrder(four_item_order);
                 }
                 using (var context = new OrderContext(connection.Options))
@@ -174,7 +174,7 @@ namespace QliroShopper.Tests
                     var item = order.OrderItems[0];
                     var oldId = order.Id;
                     order.Id = -1;
-                    // Invalid order, Valid item 
+                    // Invalid order, Valid item
                     Assert.Null(orderService.FindItem(order, item.Id));
                     order.Id = oldId;
                     // Valid order, Invalid item
@@ -188,7 +188,7 @@ namespace QliroShopper.Tests
             using (var connection = new TestSqliteSetup(connection_string))
             {
                 using (var context = new OrderContext(connection.Options))
-                {   
+                {
                     new DatabaseService(context).AddOrder(four_item_order);
                 }
                 using (var context = new OrderContext(connection.Options))

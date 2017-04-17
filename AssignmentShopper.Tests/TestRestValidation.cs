@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using QliroShopper.Controllers;
-using QliroShopper.Models;
-using QliroShopper.Tests.Utils;
+using AssignmentShopper.Controllers;
+using AssignmentShopper.Models;
+using AssignmentShopper.Tests.Utils;
 using Xunit;
 
-namespace QliroShopper.Tests
+namespace AssignmentShopper.Tests
 {
     public class TestRestValidation
     {

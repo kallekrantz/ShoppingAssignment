@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using Microsoft.EntityFrameworkCore;
-using QliroShopper.Models;
+using AssignmentShopper.Models;
 
-namespace QliroShopper.Services
+namespace AssignmentShopper.Services
 {
     public class DatabaseService
     {
@@ -18,7 +18,7 @@ namespace QliroShopper.Services
 
         public IEnumerable<Order> GetAllOrders(){
             return _context.Orders
-                           .Include(b => b.OrderItems) 
+                           .Include(b => b.OrderItems)
                            .ToList();
         }
         public Order FindOrder(int orderId)
@@ -68,7 +68,7 @@ namespace QliroShopper.Services
             // Cannot change the ID, inherit it from the original item.
             updated_item.Id = item.Id;
             _context.Entry(item).CurrentValues.SetValues(updated_item);
-            _context.SaveChanges();        
+            _context.SaveChanges();
         }
     }
 }

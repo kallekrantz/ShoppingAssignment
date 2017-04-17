@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using QliroShopper.Models;
+using AssignmentShopper.Models;
 
-namespace QliroShopper
+namespace AssignmentShopper
 {
     public class Program
     {
@@ -25,7 +25,7 @@ namespace QliroShopper
         public OrderContext() {}
         public OrderContext(DbContextOptions<OrderContext> options): base(options){}
         public DbSet<Order> Orders { get; set; }
-        public DbSet<Item> Items { get; set; }   
+        public DbSet<Item> Items { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder){
             // Ensure that the tests will not use a real physical database.
             if (!optionsBuilder.IsConfigured)
@@ -37,5 +37,5 @@ namespace QliroShopper
         }
 
     }
-    
+
 }

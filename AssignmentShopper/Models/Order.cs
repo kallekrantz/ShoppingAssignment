@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
-namespace QliroShopper.Models {
+namespace AssignmentShopper.Models {
     public class Order {
         public Order()
         {
@@ -16,8 +16,8 @@ namespace QliroShopper.Models {
         public virtual IList<Item> OrderItems { get; set; }
 
         [NotMappedAttribute]
-        public decimal TotalPrice 
-        { 
+        public decimal TotalPrice
+        {
             get {
                 if (OrderItems == null)
                 {

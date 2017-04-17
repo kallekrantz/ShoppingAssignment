@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using QliroShopper.Models;
-using QliroShopper.Services;
+using AssignmentShopper.Models;
+using AssignmentShopper.Services;
 
-namespace QliroShopper.Controllers
+namespace AssignmentShopper.Controllers
 {
     [Route("api/order")]
     public class OrderController : Controller

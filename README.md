@@ -7,7 +7,7 @@ assignment for a currently unamed company.
 # Run the code
 ```
 dotnet restore
-cd QliroShopper
+cd AssignmentShopper
 dotnet run
 ```
 The website is hosted on http://localhost:5000.
@@ -15,6 +15,6 @@ The website is hosted on http://localhost:5000.
 # Run the tests
 ```
 dotnet restore
-cd QliroShopper.Tests
+cd AssignmentShopper.Tests
 dotnet test
 ```
