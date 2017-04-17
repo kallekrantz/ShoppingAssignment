@@ -127,6 +127,7 @@ namespace QliroShopper.Tests
                 }
             }
         }
+        [Fact]
         public void TestEditNotExistingOrder()
         {
             using (var connection = new TestSqliteSetup(TestDatabaseService.connection_string))
