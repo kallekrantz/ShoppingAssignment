@@ -84,13 +84,13 @@ namespace QliroShopper.Controllers
         }
         
         [HttpGet("{id}/item/{itemId}")]
-        public IActionResult GetItem(int id, int itemId)
+        public ObjectResult GetItem(int id, int itemId)
         {
             var orderService = new DatabaseService(context);
             var order = orderService.FindOrder(id);
-            if (order == null) return NotFound();
+            if (order == null) return NotFound("Order not found");
             var item = orderService.FindItem(order, itemId);
-            if (item == null) return NotFound();
+            if (item == null) return NotFound("Item not found");
             return Ok(item);
         }
 
