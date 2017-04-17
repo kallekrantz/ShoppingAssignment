@@ -24,7 +24,7 @@ namespace QliroShopper.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public ObjectResult Get(int id)
+        public ObjectResult GetOrder(int id)
         {
             var orderService = new DatabaseService(context);
             var order = orderService.FindOrder(id);
@@ -34,7 +34,7 @@ namespace QliroShopper.Controllers
 
         // POST api/values
         [HttpPost]
-        public StatusCodeResult Post([FromBody]Order order)
+        public StatusCodeResult AddOrder([FromBody]Order order)
         {
             var orderService = new DatabaseService(context);
             orderService.AddOrder(order);
@@ -43,7 +43,7 @@ namespace QliroShopper.Controllers
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody]Order order)
+        public StatusCodeResult EditOrder(int id, [FromBody]Order order)
         {
             var service = new DatabaseService(context);
             var stored_order = service.FindOrder(id);
@@ -54,7 +54,7 @@ namespace QliroShopper.Controllers
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public StatusCodeResult RemoveOrder(int id)
         {
             var orderService = new DatabaseService(context);
             var order = orderService.FindOrder(id);
