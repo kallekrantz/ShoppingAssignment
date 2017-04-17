@@ -19,6 +19,10 @@ namespace QliroShopper.Models {
         public decimal TotalPrice 
         { 
             get {
+                if (OrderItems == null)
+                {
+                    return 0;
+                }
                 return OrderItems.Sum(i => i.Price * i.Quantity);
             }
         }
