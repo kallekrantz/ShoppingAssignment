@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
 
 namespace QliroShopper.Models {
     public class Item {
@@ -9,6 +10,8 @@ namespace QliroShopper.Models {
         public string Description { get; set; }
         public decimal Price { get; set; }
         public int Quantity { get; set; }
+
+        [IgnoreDataMember]
         public virtual Order Order { get; set; }
     }
 }
