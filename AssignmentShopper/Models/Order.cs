@@ -3,12 +3,10 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
-namespace AssignmentShopper.Models {
-    public class Order {
-        public Order()
-        {
-        }
-
+namespace AssignmentShopper.Models
+{
+    public class Order
+    {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -18,7 +16,8 @@ namespace AssignmentShopper.Models {
         [NotMappedAttribute]
         public decimal TotalPrice
         {
-            get {
+            get
+            {
                 if (OrderItems == null)
                 {
                     return 0;
