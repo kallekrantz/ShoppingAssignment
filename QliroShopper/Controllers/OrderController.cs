@@ -29,13 +29,14 @@ namespace QliroShopper.Controllers
             var orderService = new DatabaseService(context);
             var order = orderService.FindOrder(id);
             if (order == null) return NotFound("Could not find order");
-            return Ok(order);                
+            return Ok(order);
         }
 
         // POST api/values
         [HttpPost]
-        public StatusCodeResult AddOrder([FromBody]Order order)
+        public IActionResult AddOrder([FromBody]Order order)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
             var orderService = new DatabaseService(context);
             orderService.AddOrder(order);
             return Ok();
@@ -43,8 +44,9 @@ namespace QliroShopper.Controllers
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public StatusCodeResult EditOrder(int id, [FromBody]Order order)
+        public IActionResult EditOrder(int id, [FromBody]Order order)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
             var service = new DatabaseService(context);
             var stored_order = service.FindOrder(id);
             if (stored_order == null) return NotFound();
@@ -72,17 +74,18 @@ namespace QliroShopper.Controllers
             if (order == null) return NotFound("Order not found");
             return Ok(orderService.GetAllItemsForOrder(order));
         }
-        
+
         [HttpPost("{id}/item")]
-        public StatusCodeResult AddItem(int id, [FromBody]Item item)
+        public IActionResult AddItem(int id, [FromBody]Item item)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
             var orderService = new DatabaseService(context);
             var order = orderService.FindOrder(id);
             if (order == null) return NotFound();
             orderService.AddItem(order, item);
             return Ok();
         }
-        
+
         [HttpGet("{id}/item/{itemId}")]
         public ObjectResult GetItem(int id, int itemId)
         {
@@ -95,8 +98,9 @@ namespace QliroShopper.Controllers
         }
 
         [HttpPut("{id}/item/{itemId}")]
-        public StatusCodeResult EditItem(int id, int itemId, [FromBody]Item updated_item)
+        public IActionResult EditItem(int id, int itemId, [FromBody]Item updated_item)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
             var orderService = new DatabaseService(context);
             var order = orderService.FindOrder(id);
             if (order == null) return NotFound();
